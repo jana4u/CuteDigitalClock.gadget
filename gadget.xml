@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<gadget>
+  <name>CuteDigitalClock</name>
+  <version>1.0.0.0</version>
+  <author name="Jana Dvořáková">
+    <info url="https://github.com/jana4u" />
+  </author>
+  <copyright>&#169; 2011</copyright>
+  <description>Simple Digital Clock.</description>
+  <hosts>
+    <host name="sidebar">
+      <base type="HTML" apiVersion="1.0.0" src="gadget.html" />
+      <permissions>Full</permissions>
+      <platform minPlatformVersion="1.0" />
+    </host>
+  </hosts>
+</gadget>

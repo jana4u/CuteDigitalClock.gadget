@@ -1,0 +1,212 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>CuteDigitalClock Settings</title>
+    <style type="text/css">
+      body
+      {
+        height: 400px;
+        width: 300px;
+      }
+      .colorPreview
+      {
+        width: 40px;
+        height: 40px;
+        border-style: outset;
+        border-width: 2px;
+        float: left;
+      }
+      .settingSection
+      {
+        clear: both;
+        margin-bottom: 15px;
+      }
+      .settingSectionTitle
+      {
+        font-weight: bold;
+        margin-bottom: 2px;
+      }
+    </style>
+    <script type="text/javascript">
+      System.Gadget.onSettingsClosing = settingsClosing;
+
+      function settingsClosing(event)
+      {
+        if (event.closeAction == event.Action.commit)
+        {
+          System.Gadget.Settings.writeString("fontFamily", document.getElementById("fontFamily").value);
+          System.Gadget.Settings.writeString("fontSize", document.getElementById("fontSize").value);
+          System.Gadget.Settings.writeString("fontColor", document.getElementById("fontColorDiv").style.backgroundColor);
+          System.Gadget.Settings.writeString("glowColor", document.getElementById("glowColorDiv").style.backgroundColor);
+          System.Gadget.Settings.writeString("glowRadius", document.getElementById("glowRadius").value);
+          System.Gadget.Settings.writeString("glowOpacity", document.getElementById("glowOpacity").value);
+        }
+
+        event.cancel = false;
+      }
+
+      function initSettingsForm()
+      {
+        var fontFamilySelect = document.getElementById("fontFamily");
+        var fontSizeSelect = document.getElementById("fontSize");
+        var fontColorDiv = document.getElementById("fontColorDiv");
+        var glowColorDiv = document.getElementById("glowColorDiv");
+        var glowRadiusSelect = document.getElementById("glowRadius");
+        var glowOpacitySelect = document.getElementById("glowOpacity");
+
+        var fontFamilyOptions = new Array();
+        for (var i = 1; i < dlgHelper.fonts.count; i++)
+        {
+          fontFamilyOptions.push(dlgHelper.fonts(i));
+        }
+        fontFamilyOptions.sort();
+
+        for (var i = 0; i < fontFamilyOptions.length; i++)
+        {
+          addOptionToSelect(fontFamilySelect, fontFamilyOptions[i], fontFamilyOptions[i], (System.Gadget.Settings.readString("fontFamily") == fontFamilyOptions[i]));
+        }
+
+        var fontSizeOptions = new Array('8', '10', '12', '14', '16', '18', '20', '22',
+        '24', '26', '28', '30', '32', '34', '36', '38', '40', '42', '44',
+        '46', '48', '50' );
+
+        for (var i = 0; i < fontSizeOptions.length; i++)
+        {
+          addOptionToSelect(fontSizeSelect, fontSizeOptions[i], fontSizeOptions[i], (System.Gadget.Settings.readString("fontSize") == fontSizeOptions[i]));
+        }
+
+        fontColorDiv.style.backgroundColor = System.Gadget.Settings.readString("fontColor");
+        document.getElementById("fontColorButton").attachEvent("onclick", function(){openColorDialog('fontColor')});
+        document.getElementById("fontColorDiv").attachEvent("onclick", function(){openColorDialog('fontColor')});
+        glowColorDiv.style.backgroundColor = System.Gadget.Settings.readString("glowColor");
+        document.getElementById("glowColorButton").attachEvent("onclick", function(){openColorDialog('glowColor')});
+        document.getElementById("glowColorDiv").attachEvent("onclick", function(){openColorDialog('glowColor')});
+
+        var glowRadiusOptions = new Array('0', '2', '4', '6', '8', '10');
+
+        for (var i = 0; i < glowRadiusOptions.length; i++)
+        {
+          addOptionToSelect(glowRadiusSelect, glowRadiusOptions[i], glowRadiusOptions[i] + 'px', (System.Gadget.Settings.readString("glowRadius") == glowRadiusOptions[i]));
+        }
+
+        var glowOpacityOptions = new Array('0', '5', '10', '20', '40', '60', '80', '90', '100');
+
+        for (var i = 0; i < glowOpacityOptions.length; i++)
+        {
+          addOptionToSelect(glowOpacitySelect, glowOpacityOptions[i], glowOpacityOptions[i] + "%", (System.Gadget.Settings.readString("glowOpacity") == glowOpacityOptions[i]));
+        }
+
+        document.getElementById("resetButton").attachEvent("onclick", setDefaults);
+      }
+
+      function addOptionToSelect(selectElement, value, text, selected)
+      {
+        var optionElement = document.createElement("option");
+        optionElement.value = value;
+        optionElement.text = text;
+        if(selected == true)
+        {
+          optionElement.selected = true;
+        }
+        try
+        {
+          selectElement.add(optionElement);
+        }
+        catch(e)
+        {
+          selectElement.add(optionElement, null);
+        }
+      }
+
+      function openColorDialog(settingKey)
+      {
+        var previewDivElement = document.getElementById(settingKey + "Div");
+        var initialColor = previewDivElement.style.backgroundColor;
+
+        var selectedColor = dlgHelper.ChooseColorDlg(initialColor);
+
+        selectedColor = selectedColor.toString(16);
+
+        if (selectedColor.length < 6) {
+          var sTempString = "#000000".substring(0, 7 - selectedColor.length);
+          selectedColor = sTempString.concat(selectedColor);
+        }
+
+        previewDivElement.style.backgroundColor = selectedColor;
+      }
+
+      function changeSelectedOption(selectElement, value)
+      {
+        for (var i=0; i < selectElement.options.length; i++) {
+          if (selectElement.options[i].value == value)
+          {
+            selectElement.options[i].selected = true;
+          }
+        }
+      }
+
+      function setDefaults()
+      {
+        var fontFamilySelect = document.getElementById("fontFamily");
+        var fontSizeSelect = document.getElementById("fontSize");
+        var fontColorDiv = document.getElementById("fontColorDiv");
+        var glowColorDiv = document.getElementById("glowColorDiv");
+        var glowRadiusSelect = document.getElementById("glowRadius");
+        var glowOpacitySelect = document.getElementById("glowOpacity");
+
+        changeSelectedOption(fontFamilySelect, "Segoe UI");
+        changeSelectedOption(fontSizeSelect, "50");
+
+        fontColorDiv.style.backgroundColor = "#ffffff";
+        glowColorDiv.style.backgroundColor = "#000000";
+
+        changeSelectedOption(glowRadiusSelect, "10");
+        changeSelectedOption(glowOpacitySelect, "20");
+      }
+
+      window.attachEvent("onload", initSettingsForm);
+    </script>
+  </head>
+
+  <body>
+    <div class="settingSection">
+      <div class="settingSectionTitle">Font:</div>
+      <select id="fontFamily"></select>
+    </div>
+
+    <div class="settingSection">
+      <div class="settingSectionTitle">Font size:</div>
+      <select id="fontSize"></select>
+    </div>
+
+    <div class="settingSection">
+      <div class="settingSectionTitle">Font color:</div>
+      <div id="fontColorDiv" class="colorPreview"></div>
+      <button id="fontColorButton">Change color</button>
+    </div>
+
+    <div class="settingSection">
+      <div class="settingSectionTitle">Glow color:</div>
+      <div id="glowColorDiv" class="colorPreview"></div>
+      <button id="glowColorButton">Change color</button>
+    </div>
+
+    <div class="settingSection">
+      <div class="settingSectionTitle">Glow radius:</div>
+      <select id="glowRadius"></select>
+      (0px = invisible glow)
+    </div>
+
+    <div class="settingSection">
+      <div class="settingSectionTitle">Glow opacity:</div>
+      <select id="glowOpacity"></select>
+      (0% = transparent, 100% = opaque)
+    </div>
+
+    <div class="settingSection">
+      <button id="resetButton">Reset to defaults</button>
+    </div>
+
+    <object id="dlgHelper" classid="clsid:3050f819-98b5-11cf-bb82-00aa00bdce0b" width="0px" height="0px"></object>
+  </body>
+</html>
